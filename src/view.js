@@ -1,3 +1,5 @@
+import FigureColor from "./figureColor.js";
+
 export default class View{
     constructor(element, width, height, rows, columns){
         this.element = element;
@@ -12,6 +14,7 @@ export default class View{
 
         this.cellWidth = this.width / columns;
         this.cellHeight = this.height / rows;
+        this.figureColor = new FigureColor();
     }
 
     clearScreen(){
@@ -23,7 +26,7 @@ export default class View{
         for(let y = 0; y < gameField.length; y++){
             for(let x = 0; x < gameField[y].length; x++){
                 if(gameField[y][x]){
-                    this.paintCell(x, y, 'red');
+                    this.paintCell(x, y, this.figureColor.colors[gameField[y][x] + '']);
                 }
             }
         }
@@ -31,8 +34,9 @@ export default class View{
 
     paintCell(offsetX, offsetY, fillColor){
         this.context.fillStyle = fillColor;
-        this.context.strokeRect = 'black';
+        this.context.strokeStyle = 'black';
         this.context.lineWidth = 2;
         this.context.fillRect(offsetX * this.cellWidth, offsetY * this.cellHeight, this.cellWidth, this.cellHeight);
+        this.context.strokeRect(offsetX * this.cellWidth, offsetY * this.cellHeight, this.cellWidth, this.cellHeight);
     }
 }

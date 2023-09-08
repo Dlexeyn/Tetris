@@ -6,18 +6,22 @@ export default class Tetris{
     score = 0;
     lines = 0;
     field = [];
+
     nextFigureBlocks = [];
 
     activeFigure = {
         startX: 0,
         startY: 0,
-        blocks: []
+        blocks: [],
     };
+
     constructor(){
         this.generator = new FigureGenerator();
         this.field = this.createField();
 
         this.activeFigure.blocks = this.generator.generateNextFigure();
+        this.activeFigure.startX = Tetris.SIZE_X / 2 - this.activeFigure.blocks.length + 1;
+
         this.nextFigureBlocks = this.generator.generateNextFigure();
     }
 
@@ -37,7 +41,7 @@ export default class Tetris{
             for(let x = 0; x < this.activeFigure.blocks[y].length; x++)
             {
                 if(y + startY < Tetris.SIZE_Y && x + startX < Tetris.SIZE_X)
-                    stateField[y + startY][x + startX] = this.activeFigure.blocks[y][x]
+                    stateField[y + startY][x + startX] += this.activeFigure.blocks[y][x]
             }
         }
 
@@ -54,6 +58,38 @@ export default class Tetris{
         }
         return gameField;
     }
+
+    updateField(){
+        this.addFigureToField();
+        this.clearLines();
+        this.activeFigure.blocks = this.nextFigureBlocks;
+        this.activeFigure.startX = Tetris.SIZE_X / 2 - this.activeFigure.blocks.length + 1;
+        this.activeFigure.startY = 0;
+        this.nextFigureBlocks = this.generator.generateNextFigure();
+    }
+
+    clearLines(){
+        let indexesOfLines = [];
+
+        for(let y = Tetris.SIZE_Y - 1; y >= 0; y--){
+            let blocksNum = 0;
+            for(let x = 0; x < Tetris.SIZE_X; x++){
+                if(this.field[y][x]){
+                    blocksNum += 1;
+                }
+            }
+
+            if(blocksNum === 0){
+                break; 
+            } else if(blocksNum === Tetris.SIZE_X){
+                indexesOfLines.unshift(y);
+            }
+        }
+        for(let index of indexesOfLines){
+            this.field.splice(index, 1);
+            this.field.unshift(new Array(Tetris.SIZE_X).fill(0));
+        }
+}
 
     rotateFigureLeft(){
         const figureBlocks = this.activeFigure.blocks;
@@ -89,18 +125,12 @@ export default class Tetris{
             this.activeFigure.startX -= 1;
     }
 
-    // moveFigureUp(){
-    //     this.activeFigure.startY -= 1;
-    //     if(this.isCollision())
-    //         this.activeFigure.startY += 1;
-    // }
-
     moveFigureDown(){
         this.activeFigure.startY += 1;
         if(this.isCollision()){
             this.activeFigure.startY -= 1;
+            this.updateField();
         }
-            
     }
 
     isCollision(){
@@ -120,14 +150,14 @@ export default class Tetris{
         return false;
     }
 
-    addToField(){
+    addFigureToField(){
         const {startY : figureY, startX : figureX, blocks } = this.activeFigure;
 
         for(let y = 0; y < blocks.length; y++){
             for(let x = 0; x < blocks[y].length; x++)
             {
                 if(blocks[y][x])
-                    this.field[figureY + y][figureX + x] = blocks[y][x];
+                    this.field[figureY + y][figureX + x] += blocks[y][x];
             }
         }
     }
