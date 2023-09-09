@@ -11,13 +11,12 @@ export default class View{
         this.canvas.height = this.height;
         this.context = this.canvas.getContext('2d');
 
-
         this.fieldBorderWidth = 4;
         this.fieldX = 4;
         this.fieldY = 4;
 
-        // 560px * 2/3 = 360px
-        // учитываем рамку с двух сторон по ширине и высоте
+        // 640px * 1/2 = 320px
+        // и учитываем рамку с двух сторон по ширине и высоте
         this.fieldInnerWidth = this.width * 1 / 2 - this.fieldBorderWidth * 2;
         this.fieldInnerHeight = this.height - this.fieldBorderWidth * 2;
 
@@ -46,8 +45,23 @@ export default class View{
         this.context.fillText('Pause', this.width / 2, this.height / 2);
     }
 
+    paintGameOverScreen(score){
+        this.clearScreen();
+        this.context.fillStyle = 'rgba(0,0,0,0)';
+        this.context.fillRect(0, 0, this.width, this.height);
+
+        this.context.fillStyle = '#f38319';
+        this.context.font = "bold 30px Righteous";
+        this.context.textAlign = 'center';
+        this.context.textBaseline = 'middle';
+
+        this.context.fillText('Игра окончена', this.width / 2, this.height / 2);
+        this.context.fillText(`Счёт: ${score}`, this.width / 2, this.height / 2 + 48);
+        this.context.fillText(`Нажмите enter, чтобы продолжить`, this.width / 2, this.height / 2 + 96);
+    }
+
     paintField(gameState){
-        const {score, level, player, nextFigureBlocks: nextFigure, stateField} = gameState;
+        const {score, level, player, nextFigureBlocks: nextFigure, isGameOver, stateField} = gameState;
         this.clearScreen();
 
         this.context.fillStyle = '#f38319';
@@ -59,7 +73,13 @@ export default class View{
         for(let y = 0; y < stateField.length; y++){
             for(let x = 0; x < stateField[y].length; x++){
                 if(stateField[y][x]){
-                    this.paintCell(x, y, this.figureColor.colors[stateField[y][x] + '']);
+                    this.paintCell(
+                        this.fieldX,
+                        this.fieldY,
+                        x,
+                        y,
+                        this.figureColor.colors[stateField[y][x] + '']
+                    );
                 }
             }
         }
@@ -77,15 +97,37 @@ export default class View{
         this.context.fillText(`Текущий уровень: ${level}`, this.statusX, this.statusY + step);
         this.context.fillText(`Очки: ${score}`, this.statusX, this.statusY + step * 2);
         this.context.fillText(`Следующая фигура:`, this.statusX, this.statusY + step * 3);
+
+        for(let y = 0; y < nextFigure.length; y++){
+            for(let x = 0; x < nextFigure[y].length; x++){
+                if(nextFigure[y][x]){
+                    this.paintCell(
+                        this.statusX + 20,
+                        this.statusY + step * 5,
+                        x,
+                        y,
+                        this.figureColor.colors[nextFigure[y][x] + '']
+                    );
+                }
+            }
+        }
     }
 
-    paintCell(x, y, fillColor){
+    paintCell(startX, startY, x, y, fillColor){
         this.context.fillStyle = fillColor;
         this.context.strokeStyle = 'black';
         this.context.lineWidth = 2;
-        this.context.fillRect(this.fieldX + x * this.cellWidth, this.fieldY + y * this.cellHeight,
-                                this.cellWidth, this.cellHeight);
-        this.context.strokeRect(this.fieldX + x * this.cellWidth, this.fieldY + y * this.cellHeight,
-                                this.cellWidth, this.cellHeight);
+        this.context.fillRect(
+            startX + x * this.cellWidth,
+            startY + y * this.cellHeight,
+            this.cellWidth,
+            this.cellHeight
+        );
+        this.context.strokeRect(
+            startX + x * this.cellWidth,
+            startY + y * this.cellHeight,
+            this.cellWidth,
+            this.cellHeight
+        );
     }
 }

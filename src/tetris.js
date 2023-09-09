@@ -3,14 +3,21 @@ export default class Tetris{
     static SIZE_Y = 20;
     static SIZE_X = 10;
 
-    // кол-во очков за 1, 2, 3, 4 и более убранных линий
-    static scoreMap = [100, 300, 700, 1500];
-
     score = 0;
     lines = 0;
     level = 0;
+    levelRecord = 500; // 1000 - default
     field = [];
     player = 'player';
+    topOut = false;
+
+    // кол-во очков за 1, 2, 3, 4 и более убранных линий
+    scoreMap = [
+        40 * (this.level + 1),
+        100 * (this.level + 1),
+        300 * (this.level + 1),
+        1200 * (this.level + 1)
+    ];
 
     nextFigureBlocks = [];
 
@@ -19,7 +26,6 @@ export default class Tetris{
         startY: 0,
         blocks: [],
     };
-
 
     constructor(){
         this.generator = new FigureGenerator();
@@ -56,6 +62,7 @@ export default class Tetris{
             level: this.level,
             player: this.player,
             nextFigureBlocks: this.nextFigureBlocks,
+            isGameOver: this.topOut,
             stateField
         };
     }
@@ -97,7 +104,7 @@ export default class Tetris{
                 indexesOfLines.unshift(y);
             }
         }
-        this.scoring();
+        this.scoring(indexesOfLines.length);
         for(let index of indexesOfLines){
             this.field.splice(index, 1);
             this.field.unshift(new Array(Tetris.SIZE_X).fill(0));
@@ -106,11 +113,16 @@ export default class Tetris{
 
     scoring(countClearLines){
         if(countClearLines > 0 && countClearLines <=4){
-            this.score += Tetris.scoreMap[countClearLines - 1];
+            this.score += this.scoreMap[countClearLines - 1];
         } else if(countClearLines > 4){
-            this.score += Tetris.scoreMap[3];
+            this.score += this.scoreMap[3];
         }
         this.lines += countClearLines;
+
+        if(this.score >= this.levelRecord){
+            this.level += 1;
+            this.levelRecord *= (1 + this.level);
+        }
     }
 
     rotateFigureLeft(){
@@ -134,6 +146,18 @@ export default class Tetris{
         }
     }
 
+    dropFigure(){
+        while (!this.isCollision()){
+            this.activeFigure.startY += 1;
+        }
+        this.activeFigure.startY -= 1;
+        this.updateField();
+
+        if(this.isCollision()){
+            this.topOut = true;
+        }
+    }
+
     moveFigureLeft(){
         this.activeFigure.startX -= 1;
 
@@ -152,6 +176,10 @@ export default class Tetris{
         if(this.isCollision()){
             this.activeFigure.startY -= 1;
             this.updateField();
+        }
+
+        if(this.isCollision()){
+            this.topOut = true;
         }
     }
 
