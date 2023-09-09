@@ -2,18 +2,22 @@ const LEFT_ARROW = 37;
 const UP_ARROW = 38;
 const RIGHT_ARROW = 39;
 const DOWN_ARROW = 40;
+const ENTER = 13;
 
 export default class Controller{
     constructor(game, view){
         this.game = game;
         this.view = view;
+        this.isPause = false;
 
         view.paintField(game.getState());
 
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
 
         setInterval(() => {
-            this.moveDownUpdate();
+            if(!this.isPause){
+                this.moveDownUpdate();
+            }
         }, 1000);
     }
     
@@ -22,8 +26,21 @@ export default class Controller{
         view.paintField(game.getState());
     }
 
+    pauseProcessing(){
+        if(this.isPause){
+            view.paintPause();
+        } else {
+            view.paintField(game.getState());
+        }
+    }
+
     handleKeyDown(event){
+
         switch(event.keyCode){
+            case ENTER:
+                this.isPause ^= 1;
+                this.pauseProcessing();
+                break
             case LEFT_ARROW:
                 game.moveFigureLeft();
                 view.paintField(game.getState());

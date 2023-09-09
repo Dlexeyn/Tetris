@@ -3,9 +3,14 @@ export default class Tetris{
     static SIZE_Y = 20;
     static SIZE_X = 10;
 
+    // кол-во очков за 1, 2, 3, 4 и более убранных линий
+    static scoreMap = [100, 300, 700, 1500];
+
     score = 0;
     lines = 0;
+    level = 0;
     field = [];
+    player = 'player';
 
     nextFigureBlocks = [];
 
@@ -15,12 +20,13 @@ export default class Tetris{
         blocks: [],
     };
 
+
     constructor(){
         this.generator = new FigureGenerator();
         this.field = this.createField();
 
         this.activeFigure.blocks = this.generator.generateNextFigure();
-        this.activeFigure.startX = Tetris.SIZE_X / 2 - this.activeFigure.blocks.length + 1;
+        this.activeFigure.startX = Tetris.SIZE_X / 2 - Math.floor(this.activeFigure.blocks.length / 2);
 
         this.nextFigureBlocks = this.generator.generateNextFigure();
     }
@@ -45,7 +51,13 @@ export default class Tetris{
             }
         }
 
-        return stateField;
+        return {
+            score: this.score,
+            level: this.level,
+            player: this.player,
+            nextFigureBlocks: this.nextFigureBlocks,
+            stateField
+        };
     }
 
     createField(){
@@ -63,7 +75,7 @@ export default class Tetris{
         this.addFigureToField();
         this.clearLines();
         this.activeFigure.blocks = this.nextFigureBlocks;
-        this.activeFigure.startX = Tetris.SIZE_X / 2 - this.activeFigure.blocks.length + 1;
+        this.activeFigure.startX = Tetris.SIZE_X / 2 - Math.floor(this.activeFigure.blocks.length / 2);
         this.activeFigure.startY = 0;
         this.nextFigureBlocks = this.generator.generateNextFigure();
     }
@@ -85,11 +97,21 @@ export default class Tetris{
                 indexesOfLines.unshift(y);
             }
         }
+        this.scoring();
         for(let index of indexesOfLines){
             this.field.splice(index, 1);
             this.field.unshift(new Array(Tetris.SIZE_X).fill(0));
         }
-}
+    }
+
+    scoring(countClearLines){
+        if(countClearLines > 0 && countClearLines <=4){
+            this.score += Tetris.scoreMap[countClearLines - 1];
+        } else if(countClearLines > 4){
+            this.score += Tetris.scoreMap[3];
+        }
+        this.lines += countClearLines;
+    }
 
     rotateFigureLeft(){
         const figureBlocks = this.activeFigure.blocks;
