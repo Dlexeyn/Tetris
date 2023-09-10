@@ -34,14 +34,17 @@ export default class View{
         this.context.clearRect(0, 0, this.width, this.height);
     }
 
+    setStyle(color, font, textAlign, textBaseLine){
+        this.context.fillStyle = color;
+        this.context.font = font;
+        this.context.textAlign = textAlign;
+        this.context.textBaseline = textBaseLine;
+    }
+
     paintPause(){
         this.context.fillStyle = 'rgba(0,0,0,0.7)';
         this.context.fillRect(0, 0, this.width, this.height);
-
-        this.context.fillStyle = '#f38319';
-        this.context.font = "bold 30px Righteous";
-        this.context.textAlign = 'center';
-        this.context.textBaseline = 'middle';
+        this.setStyle('#f38319', "bold 30px Righteous", 'center', 'middle');
         this.context.fillText('Pause', this.width / 2, this.height / 2);
     }
 
@@ -50,10 +53,7 @@ export default class View{
         this.context.fillStyle = 'rgba(0,0,0,0)';
         this.context.fillRect(0, 0, this.width, this.height);
 
-        this.context.fillStyle = '#f38319';
-        this.context.font = "bold 30px Righteous";
-        this.context.textAlign = 'center';
-        this.context.textBaseline = 'middle';
+        this.setStyle('#f38319', "bold 30px Righteous", 'center', 'middle');
 
         this.context.fillText('Игра окончена', this.width / 2, this.height / 2);
         this.context.fillText(`Счёт: ${score}`, this.width / 2, this.height / 2 + 48);
@@ -88,10 +88,7 @@ export default class View{
     paintStatusPanel(player, level, score, nextFigure){
         let step = 20;
 
-        this.context.fillStyle = '#f38319';
-        this.context.font = "bold 18px Righteous";
-        this.context.textAlign = 'start';
-        this.context.textBaseline = 'top';
+        this.setStyle('#f38319', "bold 18px Righteous", 'start', 'top');
 
         this.context.fillText(`Игрок: ${player}`, this.statusX, this.statusY);
         this.context.fillText(`Текущий уровень: ${level}`, this.statusX, this.statusY + step);

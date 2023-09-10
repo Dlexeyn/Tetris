@@ -2,11 +2,12 @@ import FigureGenerator from "./figures.js";
 export default class Tetris{
     static SIZE_Y = 20;
     static SIZE_X = 10;
+    static startRecord = 1000;
 
     score = 0;
     lines = 0;
     level = 0;
-    levelRecord = 500; // 1000 - default
+    levelRecord = Tetris.startRecord; // 1000 - default
     field = [];
     player = 'player';
     topOut = false;
@@ -28,11 +29,20 @@ export default class Tetris{
     };
 
     constructor(){
+        this.clearField();
+    }
+
+    clearField(){
         this.generator = new FigureGenerator();
         this.field = this.createField();
-
+        this.topOut = false;
         this.activeFigure.blocks = this.generator.generateNextFigure();
         this.activeFigure.startX = Tetris.SIZE_X / 2 - Math.floor(this.activeFigure.blocks.length / 2);
+        this.activeFigure.startY = 0;
+        this.score = 0;
+        this.lines = 0;
+        this.level = 0;
+        this.levelRecord = Tetris.startRecord;
 
         this.nextFigureBlocks = this.generator.generateNextFigure();
     }

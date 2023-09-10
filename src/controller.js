@@ -21,7 +21,7 @@ export default class Controller{
     
     moveDownUpdate(){
         this.game.moveFigureDown();
-        this.view.paintField(game.getState());
+        this.play();
     }
 
     pause(){
@@ -52,6 +52,7 @@ export default class Controller{
 
     endGame(score){
         clearInterval(this.timerID);
+        this.timerID = null;
         this.view.paintGameOverScreen(score);
     }
 
@@ -94,6 +95,9 @@ export default class Controller{
     }
 
     restart() {
-
+        console.log("restart");
+        this.game.clearField();
+        this.isEndGame = false;
+        this.play();
     }
 }
