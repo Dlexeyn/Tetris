@@ -28,7 +28,8 @@ export default class Tetris{
         blocks: [],
     };
 
-    constructor(){
+    constructor(username){
+        this.player = username;
         this.clearField();
     }
 
