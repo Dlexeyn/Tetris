@@ -10,9 +10,7 @@ body {
     background-size: cover;
     border-radius: 4px;
 }
-.form_auth_block_content{
-    padding-top: 15%;
-}
+
 .form_auth_block_head_text{
     display: block;
     text-align: center;
@@ -57,12 +55,4 @@ input:focus {
     color: #000000;
     border-radius: 10px;
     border: 2px solid #436fea;
-}
-.form_auth_button{
-    display: block;
-    width: 80%;
-    border-radius: 10px;
-    height: 35px;
-    border: none;
-    cursor: pointer;
 }
