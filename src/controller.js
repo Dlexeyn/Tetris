@@ -53,6 +53,8 @@ export default class Controller{
     endGame(score){
         clearInterval(this.timerID);
         this.timerID = null;
+        localStorage.removeItem('username');
+        localStorage.setItem(game.player, game.score + '');
         this.view.paintGameOverScreen(score);
     }
 
