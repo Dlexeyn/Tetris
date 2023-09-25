@@ -47,7 +47,10 @@ export default class View{
     paintPause(){
         this.context.fillStyle = 'rgba(0,0,0,0.7)';
         this.context.fillRect(0, 0, this.width, this.height);
-        this.setStyle('#f38319', "bold 30px Righteous", 'center', 'middle');
+        this.setStyle('#f38319',
+            "bold 30px Righteous",
+            'center',
+            'middle');
         this.context.fillText('Pause', this.MIDDLE_POS, this.height / 2);
     }
 
@@ -134,7 +137,10 @@ export default class View{
         const X = this.statusX;
         const Y = this.statusY
 
-        this.setStyle('#f38319', "bold 18px Righteous", 'start', 'top');
+        this.setStyle('#f38319',
+            "bold 18px Righteous",
+            'start',
+            'top');
 
         this.context.fillText(`Игрок: ${player}`, X, Y);
         this.context.fillText(`Текущий уровень: ${level}`, X, Y + step);
