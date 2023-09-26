@@ -75,7 +75,8 @@ export default class View{
 
         this.context.restore();
 
-        this.context.fillText(`Нажмите enter, чтобы продолжить`, this.MIDDLE_POS, this.height / 2 + stepPX * n);
+        this.context.fillText(`Нажмите enter, чтобы перезапустить`, this.MIDDLE_POS,
+            this.height / 2 + stepPX * n);
     }
 
     printRecordTable(stepPX, n){
